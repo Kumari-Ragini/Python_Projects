@@ -90,7 +90,7 @@ python-magic==0.4.27
 pytweening==1.2.0
 pytz==2024.2
 pywhatkit==5.4
-pywin32>=223; platform_system == "Windows"
+#pywin32>=223; platform_system == "Windows"
 
 
 ratelim==0.1.6
