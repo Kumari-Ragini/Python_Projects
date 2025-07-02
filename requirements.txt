@@ -34,9 +34,9 @@ gTTS==2.5.3
 idna==3.10
 
 itsdangerous==2.2.0
-jax==0.4.33
+jaxlib>=0.4.30,<0.5
+jax>=0.4.13,<0.5
 
-jaxlib==0.4.34
 
 Jinja2==3.1.4
 jmespath==1.0.1
