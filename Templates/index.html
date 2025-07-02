@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Utility Toolkit</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    .header h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #fff, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 400;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .tool-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 
+        0 20px 40px rgba(0,0,0,0.1),
+        0 1px 0px rgba(255,255,255,0.2) inset;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .tool-card:nth-child(1) { animation-delay: 0.1s; }
+    .tool-card:nth-child(2) { animation-delay: 0.2s; }
+    .tool-card:nth-child(3) { animation-delay: 0.3s; }
+    .tool-card:nth-child(4) { animation-delay: 0.4s; }
+    .tool-card:nth-child(5) { animation-delay: 0.5s; }
+    .tool-card:nth-child(6) { animation-delay: 0.6s; }
+
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s;
+    }
+
+    .tool-card:hover::before {
+      left: 100%;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 
+        0 30px 60px rgba(0,0,0,0.15),
+        0 1px 0px rgba(255,255,255,0.3) inset;
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .tool-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-right: 16px;
+      color: white;
+      background: linear-gradient(135deg, var(--icon-color-1), var(--icon-color-2));
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .tool-card:nth-child(1) { --icon-color-1: #ff6b6b; --icon-color-2: #ee5a24; }
+    .tool-card:nth-child(2) { --icon-color-1: #4ecdc4; --icon-color-2: #44a08d; }
+    .tool-card:nth-child(3) { --icon-color-1: #45b7d1; --icon-color-2: #2980b9; }
+    .tool-card:nth-child(4) { --icon-color-1: #f9ca24; --icon-color-2: #f0932b; }
+    .tool-card:nth-child(5) { --icon-color-1: #6c5ce7; --icon-color-2: #a29bfe; }
+    .tool-card:nth-child(6) { --icon-color-1: #fd79a8; --icon-color-2: #e84393; }
+
+    .tool-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid rgba(0,0,0,0.1);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: rgba(255,255,255,0.8);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--icon-color-1);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(var(--icon-color-1-rgb), 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-control::placeholder {
+      color: #a0aec0;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-range {
+      width: 100%;
+      height: 8px;
+      border-radius: 10px;
+      background: linear-gradient(to right, #e2e8f0, var(--icon-color-1));
+      outline: none;
+      appearance: none;
+      margin: 20px 0;
+    }
+
+    .form-range::-webkit-slider-thumb {
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--icon-color-1);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+
+    .form-range::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, var(--icon-color-1), var(--icon-color-2));
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .volume-display {
+      text-align: center;
+      font-weight: 600;
+      color: #4a5568;
+      margin-top: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 30px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .tool-card {
+        padding: 24px;
+      }
+    }
+
+    /* Loading animation */
+    .btn.loading {
+      pointer-events: none;
+    }
+
+    .btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      border: 2px solid transparent;
+      border-top: 2px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🛠️ Python Utility Toolkit</h1>
+      <p>Powerful tools at your fingertips</p>
+    </div>
+
+    <div class="tools-grid">
+      <!-- Send Email -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h4 class="tool-title">Send Email</h4>
+        </div>
+        <form action="/send_email" method="post" onsubmit="showLoading(this)">
+          <div class="form-group">
+            <input type="email" name="email" class="form-control" placeholder="📧 Recipient Email" required>
+          </div>
+          <div class="form-group">
+            <textarea name="message" class="form-control" rows="3" placeholder="✍️ Your Message" required></textarea>
+          </div>
+          <button type="submit" class="btn">Send Email</button>
+        </form>
+      </div>
+
+      <!-- Send SMS -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h4 class="tool-title">Send SMS via Mobile</h4>
+        </div>
+        <form action="/send_sms_mobile" method="post" onsubmit="showLoading(this)">
+          <div class="form-group">
+            <input type="text" name="phone" class="form-control" placeholder="📱 Phone Number" required>
+          </div>
+          <div class="form-group">
+            <textarea name="message" class="form-control" rows="3" placeholder="💬 Your Message" required></textarea>
+          </div>
+          <button type="submit" class="btn">Send SMS</button>
+        </form>
+      </div>
+
+      <!-- Google Search -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h4 class="tool-title">Google Top 5 Search</h4>
+        </div>
+        <form action="/google_search" method="post" onsubmit="showLoading(this)">
+          <div class="form-group">
+            <input type="text" name="query" class="form-control" placeholder="🔍 Search Query" required>
+          </div>
+          <button type="submit" class="btn">Search Google</button>
+        </form>
+      </div>
+
+      <!-- Set Volume -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-volume-up"></i>
+          </div>
+          <h4 class="tool-title">Set Volume</h4>
+        </div>
+        <form action="/set_volume" method="post" onsubmit="showLoading(this)">
+          <div class="form-group">
+            <input type="range" min="0" max="1" step="0.1" value="0.5" name="volume" class="form-range" oninput="updateVolumeDisplay(this.value)">
+            <div class="volume-display" id="volumeDisplay">Volume: 50%</div>
+          </div>
+          <button type="submit" class="btn">Set Volume</button>
+        </form>
+      </div>
+
+      <!-- Text to Audio -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-volume-up"></i>
+          </div>
+          <h4 class="tool-title">Text to Audio</h4>
+        </div>
+        <form action="/text_to_audio" method="post" onsubmit="showLoading(this)">
+          <div class="form-group">
+            <textarea name="text" class="form-control" rows="3" placeholder="🔊 Text to speak" required></textarea>
+          </div>
+          <button type="submit" class="btn">Play Audio</button>
+        </form>
+      </div>
+
+      <!-- Get Location -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h4 class="tool-title">Get Current Location</h4>
+        </div>
+        <form action="/geo_location" onsubmit="showLoading(this)">
+          <button type="submit" class="btn">Get Location</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Built with ❤️ using Python • Modern UI Design</p>
+    </div>
+  </div>
+
+  <script>
+    function updateVolumeDisplay(value) {
+      const percentage = Math.round(value * 100);
+      document.getElementById('volumeDisplay').textContent = `Volume: ${percentage}%`;
+    }
+
+    function showLoading(form) {
+      const button = form.querySelector('button[type="submit"]');
+      button.classList.add('loading');
+      button.textContent = '';
+    }
+
+    // Add some interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add ripple effect to buttons
+      const buttons = document.querySelectorAll('.btn');
+      buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          const ripple = document.createElement('span');
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.width = ripple.style.height = size + 'px';
+          ripple.style.left = x + 'px';
+          ripple.style.top = y + 'px';
+          ripple.classList.add('ripple');
+          
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
+      });
+
+      // Parallax effect for background
+      document.addEventListener('mousemove', function(e) {
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+        
+        document.body.style.backgroundPosition = `${mouseX * 20}px ${mouseY * 20}px`;
+      });
+    });
+
+    // Add CSS for ripple effect
+    const style = document.createElement('style');
+    style.textContent = `
+      .ripple {
+        position: absolute;
+        background: rgba(255,255,255,0.6);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: ripple-animation 0.6s linear;
+        z-index: 1;
+      }
+      
+      @keyframes ripple-animation {
+        to {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
